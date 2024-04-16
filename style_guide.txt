@@ -1,0 +1,9 @@
+1. Space out variable/const assignements.
+Example:
+int foo = bar;
+opposed to
+int foo=bar;
+
+2. camelCase for function and variable names
+
+3. Global constants in uppercase SNAKE_CASE
