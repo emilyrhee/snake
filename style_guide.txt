@@ -7,3 +7,33 @@ int foo=bar;
 2. camelCase for function and variable names
 
 3. Global constants in uppercase SNAKE_CASE
+
+_______Key Features_____
+Movement 
+  snake growth
+Collisions 
+  trophies 
+  border
+  itself
+Snake Pit
+  Terminal Boarder 
+
+_____Gameplay____
+On frame
+  detect user input 
+    change direction
+    if opposite direction 
+      die 
+  detect collision 
+    if cillision
+      die
+  detect trophy 
+    snake grows
+
+____Variables_____
+intSnakeLength, 
+Position(intX, intY), 
+intTrophyNumber, 
+intTrophyExpireTime, 
+intSpeed
+  
