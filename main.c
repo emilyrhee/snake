@@ -35,5 +35,13 @@ void handleInput() { // Emily
 }
 
 int main() {
+    initCurses();
+
+    drawBorders();
+    
+    while(1) {
+        handleInput();
+    }
+
     return 0;
 }
