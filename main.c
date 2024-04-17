@@ -1,22 +1,26 @@
 #include <curses.h>
 #include <stdlib.h>
 
-void initCurses() { // Emily
-    initscr(); // boilerplate for curses
+// boilerplate for curses (Emily)
+void initCurses() {
+    initscr();
     clear();
     curs_set(0); // hide cursor
     noecho();
 }
 
-void drawBorders() { // Emily
-    for (int i = 0; i < COLS; i++) { // Draw top & bottom lines
+// Emily
+void drawBorders() {
+    // Draw top & bottom lines
+    for (int i = 0; i < COLS; i++) {
         move(0, i);
         addstr("-");
         move(LINES - 1, i);
         addstr("-");
     }
 
-    for (int i = 0; i < LINES; i++) { // Draw side lines
+    // Draw side lines
+    for (int i = 0; i < LINES; i++) {
         move(i, 0);
         addstr("|");
         move(i, COLS - 1);
@@ -24,9 +28,10 @@ void drawBorders() { // Emily
     }
 }
 
-void handleInput() { // Emily
+// handles key presses (Emily)
+void handleInput() {
     int ch = getch();
-    switch(ch) { // handles key presses
+    switch(ch) {
         case 'x':
         case 'X':
             endwin();
