@@ -1,6 +1,13 @@
 #include <curses.h>
 #include <stdlib.h>
 
+void initCurses() { // Emily
+    initscr(); // boilerplate for curses
+    clear();
+    curs_set(0); // hide cursor
+    noecho();
+}
+
 void drawBorders() { // Emily
     for (int i = 0; i < COLS; i++) { // Draw top & bottom lines
         move(0, i);
