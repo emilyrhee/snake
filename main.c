@@ -3,9 +3,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <time.h>
 
 #define MAXSNAKELENGTH 20
-#define INITSIZE 5
+#define INITSIZE 3
 
 typedef enum {
     UP,
@@ -142,9 +143,15 @@ void snakeMovement(struct snakeData* snake){
     refresh();
 }
 
+// sets a random initial direction (Emily)
+void initDirection(struct snakeData* snake) {
+    srand(time(NULL));
+    snake->direction = rand() % 4;
+}
+
 int main() {
-    struct snakeData snake; 
-    snake.direction = RIGHT;
+    struct snakeData snake;
+    initDirection(&snake);
 
     initCurses();
     drawBorders();
@@ -153,7 +160,7 @@ int main() {
     while(snake.alive){
         snakeMovement(&snake);
         handleInput(&snake);
-        usleep(100000);
+        usleep(300000);
     }
     return 0;
 }
