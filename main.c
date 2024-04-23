@@ -6,14 +6,17 @@
 
 #define MAXSNAKELENGTH 20
 #define INITSIZE 5
-#define RIGHT 0
-#define UP 1
-#define LEFT 2
-#define DOWN 3
+
+typedef enum {
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT
+} Direction;
 
 //defines snake (Mitch)
 struct snakeData{
-    int direction;
+    Direction direction;
     int alive;
     int size;
     int x [MAXSNAKELENGTH];
