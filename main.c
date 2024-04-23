@@ -2,15 +2,20 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 #define MAXSNAKELENGTH 20
-#define INITSIZE 3
+#define INITSIZE 5
+#define RIGHT 0
+#define UP 1
+#define LEFT 2
+#define DOWN 3
 
 //defines snake (Mitch)
 struct snakeData{
-    char* direction;
+    int direction;
     int alive;
-    int size; 
+    int size;
     int x [MAXSNAKELENGTH];
     int y [MAXSNAKELENGTH];
 };
@@ -57,22 +62,21 @@ void drawBorders() {
 }
 
 // handles key presses (Emily)
-// TODO get direction input. Should return char or int? 
 void handleInput(struct snakeData* snake) {
     int ch = getch();
     keypad(stdscr, TRUE);
     switch(ch) {
         case KEY_UP:
-            snake->direction = "UP";
+            snake->direction = UP;
             break;
         case KEY_DOWN:
-            snake->direction = "DOWN";
+            snake->direction = DOWN;
             break;
         case KEY_LEFT:
-            snake->direction = "LEFT";
+            snake->direction = LEFT;
             break;
         case KEY_RIGHT:
-            snake->direction = "RIGHT";
+            snake->direction = RIGHT;
             break;
         case 'x':
         case 'X':
@@ -83,17 +87,19 @@ void handleInput(struct snakeData* snake) {
 }
 
 //snake goes zoooooo0o()()oom!!(mitch)
-//TODO get direction and pray code still works. 
-void snakeMovement(struct snakeData* snake, int direction){
+void snakeMovement(struct snakeData* snake){
     //rotate snake body array [(y,x newLocation), (y,x[index-1]), (y,x[index-1]), ...]
     int prevX = 0;
     int prevY = 0;
     int tempX = 0;
     int tempY = 0;
     int i = 0;
+    int lastX = snake->x[snake->size - 1];
+    int lastY = snake->y[snake->size - 1];
+
     prevX = snake->x[0];
-    prevY = snake ->y[0];
-    while(snake->x[i] != 0 && snake->y[i] != 0){
+    prevY = snake->y[0];
+    while(snake->x[i] != 0 && snake->y[i] != 0 && i < snake->size - 1){
         tempX = snake->x[i+1];
         tempY = snake->y[i+1];
         snake->x[i+1] = prevX;
@@ -106,9 +112,20 @@ void snakeMovement(struct snakeData* snake, int direction){
     //Get print body at (nextY, nextX)) 
     int nextX = snake->x[0];
     int nextY = snake->y[0];
-    switch (direction) {
-        case 1: 
-            nextX +=1;
+    // increment/decrement coordinates according to input (Emily)
+    switch(snake->direction) {
+        case RIGHT:
+            nextX++;
+            break;
+        case UP:
+            nextY--;
+            break;
+        case LEFT:
+            nextX--;
+            break;
+        case DOWN:
+            nextY++;
+            break;
     }
     snake->x[0] = nextX;
     snake->y[0] = nextY;
@@ -116,17 +133,17 @@ void snakeMovement(struct snakeData* snake, int direction){
     addstr("#");
 
     //delete body at (LastY, LastX)
-    int lastX = snake->x[snake->size];
-    int lastY = snake->y[snake->size];
     move(lastY, lastX); 
     addstr(" ");
+
+    mvprintw(0, 0, "Coordinates: %d, %d    ", lastX, lastY);
 
     refresh();
 }
 
 int main() {
     struct snakeData snake; 
-    snake.direction = "RIGHT";
+    snake.direction = RIGHT;
 
     initCurses();
     drawBorders();
