@@ -136,8 +136,6 @@ void snakeMovement(struct snakeData* snake){
     move(lastY, lastX); 
     addstr(" ");
 
-    mvprintw(0, 0, "Coordinates: %d, %d    ", lastX, lastY);
-
     refresh();
 }
 
