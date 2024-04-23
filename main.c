@@ -8,6 +8,7 @@
 
 //defines snake (Mitch)
 struct snakeData{
+    char* direction;
     int alive;
     int size; 
     int x [MAXSNAKELENGTH];
@@ -57,13 +58,27 @@ void drawBorders() {
 
 // handles key presses (Emily)
 // TODO get direction input. Should return char or int? 
-void handleInput() {
+void handleInput(struct snakeData* snake) {
     int ch = getch();
+    keypad(stdscr, TRUE);
     switch(ch) {
+        case KEY_UP:
+            snake->direction = "UP";
+            break;
+        case KEY_DOWN:
+            snake->direction = "DOWN";
+            break;
+        case KEY_LEFT:
+            snake->direction = "LEFT";
+            break;
+        case KEY_RIGHT:
+            snake->direction = "RIGHT";
+            break;
         case 'x':
         case 'X':
             endwin();
             exit(0);
+            break;
     }
 }
 
@@ -111,16 +126,16 @@ void snakeMovement(struct snakeData* snake, int direction){
 
 int main() {
     struct snakeData snake; 
-    int direction = 1;
+    snake.direction = "RIGHT";
 
     initCurses();
     drawBorders();
     initSnake(&snake);
     
     while(snake.alive){
-        snakeMovement(&snake, direction);
-        handleInput();
-        usleep(600000);
+        snakeMovement(&snake);
+        handleInput(&snake);
+        usleep(100000);
     }
     return 0;
 }
