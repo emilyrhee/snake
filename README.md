@@ -23,7 +23,7 @@
 ## Gameplay:
 
 The snake dies and the game ends if:
-- [ ] It runs into the border; or
+- [x] It runs into the border; or
 - [ ] It runs into itself; or
 - [ ] The user attempts to reverse the snake's direction.
 

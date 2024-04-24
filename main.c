@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <time.h>
+#include <stdbool.h>
 
 #define MAXSNAKELENGTH 20
 #define INITSIZE 3
@@ -18,7 +19,7 @@ typedef enum {
 //defines snake (Mitch)
 struct snakeData{
     Direction direction;
-    int alive;
+    bool isAlive;
     int size;
     int x [MAXSNAKELENGTH];
     int y [MAXSNAKELENGTH];
@@ -28,7 +29,7 @@ struct snakeData{
 //TODO fill x, y arrays with zeros
 void initSnake(struct snakeData* snake){
     snake -> size = INITSIZE; 
-    snake -> alive = 1;
+    snake -> isAlive = true;
     for(int i = 0; i < INITSIZE; i++){
         snake -> x[i] = COLS / 2 - i;
         snake -> y[i] = LINES / 2;
@@ -149,18 +150,33 @@ void initDirection(struct snakeData* snake) {
     snake->direction = rand() % 4;
 }
 
+// Check if snake's head collides w/border (Emily)
+bool isSnakeOutOfBounds(struct snakeData* snake) {
+    return (
+        !snake->x[0]
+        || snake->x[0] == COLS - 1
+        || !snake->y[0]
+        || snake->y[0] == LINES - 1
+    );
+}
+
 int main() {
     struct snakeData snake;
     initDirection(&snake);
-
     initCurses();
     drawBorders();
     initSnake(&snake);
     
-    while(snake.alive){
+    while(snake.isAlive){
         snakeMovement(&snake);
         handleInput(&snake);
         usleep(300000);
+
+        if (isSnakeOutOfBounds(&snake)) {
+            snake.isAlive = false;
+        }
     }
+
+    endwin();
     return 0;
 }
