@@ -72,15 +72,27 @@ void handleInput(struct snakeData* snake) {
     keypad(stdscr, TRUE);
     switch(ch) {
         case KEY_UP:
+            if(snake->direction == DOWN){
+                snake->isAlive = FALSE;
+            }
             snake->direction = UP;
             break;
         case KEY_DOWN:
+            if(snake->direction == UP){
+                snake->isAlive = FALSE;
+            }
             snake->direction = DOWN;
             break;
         case KEY_LEFT:
+            if(snake->direction == RIGHT){
+                snake->isAlive = FALSE;
+            }
             snake->direction = LEFT;
             break;
         case KEY_RIGHT:
+            if(snake->direction == LEFT){
+                snake->isAlive = FALSE;
+            }
             snake->direction = RIGHT;
             break;
         case 'x':
@@ -168,8 +180,9 @@ int main() {
     initSnake(&snake);
     
     while(snake.isAlive){
-        snakeMovement(&snake);
         handleInput(&snake);
+        snakeMovement(&snake);
+        
         usleep(300000);
 
         if (isSnakeOutOfBounds(&snake)) {
