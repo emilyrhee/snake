@@ -8,6 +8,7 @@
 
 #define MAXSNAKELENGTH 20
 #define INITSIZE 3
+#define INITSPEED 300000
 
 typedef enum {
     UP,
@@ -21,15 +22,26 @@ struct snakeData{
     Direction direction;
     bool isAlive;
     int size;
+    int speed;
     int x [MAXSNAKELENGTH];
     int y [MAXSNAKELENGTH];
 };
+
+struct trophyData{
+    bool isAlive;
+    int time;
+    int size; 
+    int X;
+    int Y;
+};
+
 
 //initializes snake (Mitch)
 //TODO fill x, y arrays with zeros
 void initSnake(struct snakeData* snake){
     snake -> size = INITSIZE; 
     snake -> isAlive = true;
+    snake -> speed = INITSPEED;
     for(int i = 0; i < INITSIZE; i++){
         snake -> x[i] = COLS / 2 - i;
         snake -> y[i] = LINES / 2;
@@ -103,7 +115,7 @@ void handleInput(struct snakeData* snake) {
     }
 }
 
-//snake goes zoooooo0o()()oom!!(mitch)
+//moves snake (mitch)
 void snakeMovement(struct snakeData* snake){
     //rotate snake body array [(y,x newLocation), (y,x[index-1]), (y,x[index-1]), ...]
     int prevX = 0;
@@ -172,22 +184,65 @@ bool isSnakeOutOfBounds(struct snakeData* snake) {
     );
 }
 
+
+int randomRange(int lowerBound, int upperBound){
+    return (rand() % (upperBound - lowerBound + 1) + lowerBound);
+}
+
+//Create random trophy (Mitch)
+void spawnTrophy(struct trophyData* trophy){
+    //delete  previous trophy
+    move(trophy->Y, trophy->X);
+    addstr(" ");
+
+    //get random numbers
+    int ranTrophy = 0, ranX = 0, ranY = 0, ranWait=0; 
+    ranTrophy = randomRange(1, 9);
+    ranX = randomRange(1, COLS - 2);
+    ranY = randomRange(1, LINES - 2);
+    ranWait = randomRange(1, 9);
+
+    //fill trophy data
+    trophy -> isAlive = TRUE;
+    trophy -> size = ranTrophy;
+    trophy -> time = ranWait;
+    trophy -> X = ranX;
+    trophy -> Y = ranY;
+
+    //create trophy
+    move(ranY, ranX);
+    printw("%d",ranTrophy);
+}
+
 int main() {
     struct snakeData snake;
+    struct trophyData trophy;
+    int trophyClock = 0;
+    
     initDirection(&snake);
     initCurses();
     drawBorders();
     initSnake(&snake);
     
+    //initalize trophy outside bounds
+    trophy.X = -1;
+    trophy.Y = -1;
+    spawnTrophy(&trophy);
+
     while(snake.isAlive){
         handleInput(&snake);
         snakeMovement(&snake);
         
-        usleep(300000);
+        usleep(snake.speed);
 
         if (isSnakeOutOfBounds(&snake)) {
             snake.isAlive = false;
         }
+        if(trophyClock > trophy.time*1000000 || trophy.isAlive == FALSE){
+            spawnTrophy(&trophy);
+            trophyClock = 0;
+        }
+        trophyClock += snake.speed;
     }
 
     endwin();
