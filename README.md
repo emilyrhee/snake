@@ -14,18 +14,19 @@
 
 ## The Trophies:
 
-- [ ] Trophies are represented by a digit randomly chosen from 1 to 9.
-- [ ] There's always exactly one trophy in the snake pit at any given moment.
+- [x] Trophies are represented by a digit randomly chosen from 1 to 9.
+- [x] There's always exactly one trophy in the snake pit at any given moment.
 - [ ] When the snake eats the trophy, its length is increased by the corresponding number of characters.
-- [ ] A trophy expires after a random interval from 1 to 9 seconds.
-- [ ] A new trophy is shown at a random location on the screen after the previous one has either expired or is eaten by the snake.
+- [x] A trophy expires after a random interval from 1 to 9 seconds.
+- [x] A new trophy is shown at a random location on the screen after the previous one has either expired,
+- [ ] or is eaten by the snake.
 
 ## Gameplay:
 
 The snake dies and the game ends if:
 - [x] It runs into the border; or
 - [ ] It runs into itself; or
-- [ ] The user attempts to reverse the snake's direction.
+- [x] The user attempts to reverse the snake's direction.
 
 The user wins if:
 - [ ] The snake's length grows to the length equal to half the perimeter of the border.
