@@ -19,28 +19,28 @@ typedef enum {
 } Direction;
 
 //defines snake (Mitch)
-struct snakeData{
+typedef struct {
     Direction direction;
     bool isAlive;
     int size;
     int speed;
     int x [MAXSNAKELENGTH];
     int y [MAXSNAKELENGTH];
-};
+} SnakeData;
 
 //defines trophy (Mitch)
-struct trophyData{
+typedef struct {
     bool isAlive;
     int time;
     int size; 
     int X;
     int Y;
-};
+} TrophyData;
 
 
 //initializes snake (Mitch)
-void initSnake(struct snakeData* snake){
-    snake -> size = INITSIZE; 
+void initSnake(SnakeData* snake, int size){
+    snake -> size = size; 
     snake -> isAlive = true;
     snake -> speed = INITSPEED;
     for(int i = 0; i < INITSIZE; i++){
@@ -76,7 +76,7 @@ void drawBorders() {
 }
 
 // handles key presses (Emily)
-void handleInput(struct snakeData* snake) {
+void handleInput(SnakeData* snake) {
     int ch = getch();
     keypad(stdscr, TRUE);
     switch(ch) {
@@ -113,7 +113,7 @@ void handleInput(struct snakeData* snake) {
 }
 
 //moves snake (Mitch)
-void snakeMovement(struct snakeData* snake){
+void snakeMovement(SnakeData* snake){
     //rotate snake body array [(y,x newLocation), (y,x[index-1]), (y,x[index-1]), ...]
     int prevX = 0;
     int prevY = 0;
@@ -166,13 +166,13 @@ void snakeMovement(struct snakeData* snake){
 }
 
 // sets a random initial direction (Emily)
-void initDirection(struct snakeData* snake) {
+void initDirection(SnakeData* snake) {
     srand(time(NULL));
     snake->direction = rand() % 4;
 }
 
 // Check if snake's head collides w/border (Emily)
-bool isSnakeOutOfBounds(struct snakeData* snake) {
+bool isSnakeOutOfBounds(SnakeData* snake) {
     return (
         !snake->x[0]
         || snake->x[0] == COLS - 1
@@ -187,7 +187,7 @@ int randomRange(int lowerBound, int upperBound){
 }
 
 //Create random trophy (Mitch)
-void spawnTrophy(struct trophyData* trophy){
+void spawnTrophy(TrophyData* trophy){
     //delete  previous trophy
     move(trophy->Y, trophy->X);
     addstr(" ");
@@ -214,8 +214,8 @@ void spawnTrophy(struct trophyData* trophy){
 
 
 int main() {
-    struct snakeData snake;
-    struct trophyData trophy;
+    SnakeData snake;
+    TrophyData trophy;
     int trophyClock = 0;
     
     initDirection(&snake);
