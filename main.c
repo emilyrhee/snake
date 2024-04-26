@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include "cutScreens.h"
 
-#define MAXSNAKELENGTH 20
+#define MAXSNAKELENGTH 50
 #define INITSPEED 200000
 
 typedef enum {
@@ -111,6 +111,11 @@ void handleInput(SnakeData* snake) {
     }
 }
 
+// Checks if snake's coordinates are equal to trophy's (Emily)
+bool isColliding(SnakeData* snake, TrophyData* trophy) {
+    return (snake->x[0] == trophy->X && snake->y[0] == trophy->Y);
+}
+
 //moves snake (Mitch)
 void snakeMovement(SnakeData* snake){
     //rotate snake body array [(y,x newLocation), (y,x[index-1]), (y,x[index-1]), ...]
@@ -152,13 +157,15 @@ void snakeMovement(SnakeData* snake){
             nextY++;
             break;
     }
-    snake->x[0] = nextX;
-    snake->y[0] = nextY;
-    move(nextY, nextX); 
-    addstr("#");
+
+    // Redraw snake from head to end of tail (Emily)
+    for (int i = 0; i < snake->size; i++) {
+        move(snake->y[i], snake->x[i]);
+        addstr("#");
+    }
 
     //delete body at (LastY, LastX)
-    move(lastY, lastX); 
+    move(lastY, lastX);
     addstr(" ");
 }
 
@@ -207,11 +214,6 @@ void spawnTrophy(TrophyData* trophy){
     printw("%d",ranTrophy);
 }
 
-// Checks if snake's coordinates are equal to trophy's (Emily)
-bool isColliding(SnakeData* snake, TrophyData* trophy) {
-    return (snake->x[0] == trophy->X && snake->y[0] == trophy->Y);
-}
-
 // Sets values for snake coordinates after obtaining trophy (Emily)
 void growSnake(SnakeData* snake, TrophyData* trophy) {
     int newSize = snake->size + trophy->size;
@@ -255,7 +257,7 @@ int main() {
             growSnake(&snake, &trophy);
         }
 
-        if(trophyClock > trophy.time*1000000 || trophy.isAlive == FALSE){
+        if(trophyClock > trophy.time*1000000 || !trophy.isAlive){
             spawnTrophy(&trophy);
             trophyClock = 0;
         }
