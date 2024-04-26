@@ -5,10 +5,11 @@
 #include <string.h>
 #include <time.h>
 #include <stdbool.h>
+#include "cutScreens.h"
 
 #define MAXSNAKELENGTH 20
 #define INITSIZE 3
-#define INITSPEED 300000
+#define INITSPEED 200000
 
 typedef enum {
     UP,
@@ -27,6 +28,7 @@ struct snakeData{
     int y [MAXSNAKELENGTH];
 };
 
+//defines trophy (Mitch)
 struct trophyData{
     bool isAlive;
     int time;
@@ -37,7 +39,6 @@ struct trophyData{
 
 
 //initializes snake (Mitch)
-//TODO fill x, y arrays with zeros
 void initSnake(struct snakeData* snake){
     snake -> size = INITSIZE; 
     snake -> isAlive = true;
@@ -115,7 +116,7 @@ void handleInput(struct snakeData* snake) {
     }
 }
 
-//moves snake (mitch)
+//moves snake (Mitch)
 void snakeMovement(struct snakeData* snake){
     //rotate snake body array [(y,x newLocation), (y,x[index-1]), (y,x[index-1]), ...]
     int prevX = 0;
@@ -214,6 +215,8 @@ void spawnTrophy(struct trophyData* trophy){
     printw("%d",ranTrophy);
 }
 
+
+
 int main() {
     struct snakeData snake;
     struct trophyData trophy;
@@ -222,7 +225,10 @@ int main() {
     initDirection(&snake);
     initCurses();
     drawBorders();
+    startScreen();
+    drawBorders();
     initSnake(&snake);
+
     
     //initalize trophy outside bounds
     trophy.X = -1;
