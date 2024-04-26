@@ -8,7 +8,6 @@
 #include "cutScreens.h"
 
 #define MAXSNAKELENGTH 20
-#define INITSIZE 3
 #define INITSPEED 200000
 
 typedef enum {
@@ -43,7 +42,7 @@ void initSnake(SnakeData* snake, int size){
     snake -> size = size; 
     snake -> isAlive = true;
     snake -> speed = INITSPEED;
-    for(int i = 0; i < INITSIZE; i++){
+    for(int i = 0; i < size; i++){
         snake -> x[i] = COLS / 2 - i;
         snake -> y[i] = LINES / 2;
         move(LINES / 2, COLS / 2 - i);
@@ -181,7 +180,6 @@ bool isSnakeOutOfBounds(SnakeData* snake) {
     );
 }
 
-
 int randomRange(int lowerBound, int upperBound){
     return (rand() % (upperBound - lowerBound + 1) + lowerBound);
 }
@@ -217,15 +215,14 @@ int main() {
     SnakeData snake;
     TrophyData trophy;
     int trophyClock = 0;
+    int size = 3;
     
     initDirection(&snake);
     initCurses();
     drawBorders();
-    startScreen();
-    drawBorders();
-    initSnake(&snake);
+    //startScreen();
+    initSnake(&snake, size);
 
-    
     //initalize trophy outside bounds
     trophy.X = -1;
     trophy.Y = -1;
