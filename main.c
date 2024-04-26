@@ -64,18 +64,14 @@ void initCurses() {
 void drawBorders() {
     // Draw top & bottom lines
     for (int i = 0; i < COLS; i++) {
-        move(0, i);
-        addstr("-");
-        move(LINES - 1, i);
-        addstr("-");
+        mvaddstr(0, i, "-");
+        mvaddstr(LINES - 1, i, "-");
     }
 
     // Draw side lines
     for (int i = 0; i < LINES; i++) {
-        move(i, 0);
-        addstr("|");
-        move(i, COLS - 1);
-        addstr("|");
+        mvaddstr(i, 0, "|");
+        mvaddstr(i, COLS - 1, "|");
     }
 }
 
