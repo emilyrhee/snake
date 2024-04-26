@@ -23,8 +23,8 @@ typedef struct {
     bool isAlive;
     int size;
     int speed;
-    int x [MAXSNAKELENGTH];
-    int y [MAXSNAKELENGTH];
+    int x[MAXSNAKELENGTH];
+    int y[MAXSNAKELENGTH];
 } SnakeData;
 
 //defines trophy (Mitch)
@@ -160,8 +160,6 @@ void snakeMovement(SnakeData* snake){
     //delete body at (LastY, LastX)
     move(lastY, lastX); 
     addstr(" ");
-
-    refresh();
 }
 
 // sets a random initial direction (Emily)
@@ -209,13 +207,27 @@ void spawnTrophy(TrophyData* trophy){
     printw("%d",ranTrophy);
 }
 
+// Checks if snake's coordinates are equal to trophy's (Emily)
+bool isColliding(SnakeData* snake, TrophyData* trophy) {
+    return (snake->x[0] == trophy->X && snake->y[0] == trophy->Y);
+}
 
+// Sets values for snake coordinates after obtaining trophy (Emily)
+void growSnake(SnakeData* snake, TrophyData* trophy) {
+    int newSize = snake->size + trophy->size;
+    if (newSize > MAXSNAKELENGTH) newSize = MAXSNAKELENGTH;
+    for (int i = snake->size; i < newSize; i++) {
+        snake->x[i] = snake->x[snake->size - 1];
+        snake->y[i] = snake->y[snake->size - 1];
+    }
+    snake->size = newSize;
+}
 
 int main() {
     SnakeData snake;
     TrophyData trophy;
     int trophyClock = 0;
-    int size = 3;
+    int size = 5;
     
     initDirection(&snake);
     initCurses();
@@ -237,6 +249,12 @@ int main() {
         if (isSnakeOutOfBounds(&snake)) {
             snake.isAlive = false;
         }
+
+        if (isColliding(&snake, &trophy)) {
+            trophy.isAlive = false;
+            growSnake(&snake, &trophy);
+        }
+
         if(trophyClock > trophy.time*1000000 || trophy.isAlive == FALSE){
             spawnTrophy(&trophy);
             trophyClock = 0;
