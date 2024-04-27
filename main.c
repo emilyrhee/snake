@@ -8,7 +8,6 @@
 #include "cutScreens.h"
 
 #define MAXSNAKELENGTH 50
-#define INITSPEED 200000
 
 typedef enum {
     UP,
@@ -38,10 +37,10 @@ typedef struct {
 
 
 //initializes snake (Mitch)
-void initSnake(SnakeData* snake, int size){
+void initSnake(SnakeData* snake, int size, int speed){
     snake -> size = size; 
     snake -> isAlive = true;
-    snake -> speed = INITSPEED;
+    snake -> speed = speed;
     for(int i = 0; i < size; i++){
         snake -> x[i] = COLS / 2 - i;
         snake -> y[i] = LINES / 2;
@@ -72,6 +71,10 @@ void drawBorders() {
         mvaddstr(i, 0, "|");
         mvaddstr(i, COLS - 1, "|");
     }
+}
+
+int targetScore() {
+    return COLS + LINES;
 }
 
 // handles key presses (Emily)
@@ -226,17 +229,29 @@ void growSnake(SnakeData* snake, TrophyData* trophy) {
     snake->size = newSize;
 }
 
+// Emily
+void printCenteredMsg(const char* message) {
+    clear();
+    int messageLen = strlen(message);
+    // Calculate center position based on message length and window size
+    mvaddstr(LINES / 2, (COLS - messageLen) / 2, message);
+    refresh();
+    sleep(2);
+}
+
+
 int main() {
     SnakeData snake;
     TrophyData trophy;
     int trophyClock = 0;
     int size = 5;
+    int speed = 200000;
     
     initDirection(&snake);
     initCurses();
     drawBorders();
     //startScreen();
-    initSnake(&snake, size);
+    initSnake(&snake, size, speed);
 
     //initalize trophy outside bounds
     trophy.X = -1;
@@ -258,12 +273,19 @@ int main() {
             growSnake(&snake, &trophy);
         }
 
-        if(trophyClock > trophy.time*1000000 || !trophy.isAlive){
+        if (trophyClock > trophy.time*1000000 || !trophy.isAlive){
             spawnTrophy(&trophy);
             trophyClock = 0;
         }
         trophyClock += snake.speed;
+
+        if (snake.size >= targetScore()) {
+            printCenteredMsg("You won! :D");
+            break;
+        }
     }
+
+
 
     endwin();
     return 0;
