@@ -21,6 +21,7 @@
 - [x] A new trophy is shown at a random location on the screen after the previous one has either expired or is eaten by the snake.
 - [x] A new trophy is shown at a random location on the screen after the previous one has either expired,
 - [x] or is eaten by the snake.
+- [ ] Trophies should not spawn at the same coordinates of a snake segment
 
 ## Gameplay:
 
@@ -30,4 +31,4 @@ The snake dies and the game ends if:
 - [x] The user attempts to reverse the snake's direction.
 
 The user wins if:
-- [ ] The snake's length grows to the length equal to half the perimeter of the border.
+- [x] The snake's length grows to the length equal to half the perimeter of the border.
