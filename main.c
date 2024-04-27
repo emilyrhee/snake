@@ -157,7 +157,8 @@ void snakeMovement(SnakeData* snake){
             nextY++;
             break;
     }
-
+    snake->x[0] = nextX;
+    snake->y[0] = nextY;
     // Redraw snake from head to end of tail (Emily)
     for (int i = 0; i < snake->size; i++) {
         move(snake->y[i], snake->x[i]);
