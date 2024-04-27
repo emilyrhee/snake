@@ -231,7 +231,6 @@ void growSnake(SnakeData* snake, TrophyData* trophy) {
 
 // Emily
 void printCenteredMsg(const char* message) {
-    clear();
     int messageLen = strlen(message);
     // Calculate center position based on message length and window size
     mvaddstr(LINES / 2, (COLS - messageLen) / 2, message);
@@ -250,7 +249,8 @@ int main() {
     initDirection(&snake);
     initCurses();
     drawBorders();
-    //startScreen();
+    startScreen();
+    drawBorders();
     initSnake(&snake, size, speed);
 
     //initalize trophy outside bounds
@@ -280,12 +280,11 @@ int main() {
         trophyClock += snake.speed;
 
         if (snake.size >= targetScore()) {
+            clear();
             printCenteredMsg("You won! :D");
             break;
         }
     }
-
-
 
     endwin();
     return 0;
