@@ -10,7 +10,7 @@
 - [x] The initial length of the snake is three characters.
 - [x] Initial direction of the snake's movement is chosen randomly.
 - [x] The user can press one of the four arrow keys to change the direction of the snake's movement.
-- [ ] The snake's speed is proportional to its length.
+- [x] The snake's speed is proportional to its length.
 
 ## The Trophies:
 
@@ -21,13 +21,13 @@
 - [x] A new trophy is shown at a random location on the screen after the previous one has either expired or is eaten by the snake.
 - [x] A new trophy is shown at a random location on the screen after the previous one has either expired,
 - [x] or is eaten by the snake.
-- [ ] Trophies should not spawn at the same coordinates of a snake segment
+- [x] Trophies should not spawn at the same coordinates of a snake segment
 
 ## Gameplay:
 
 The snake dies and the game ends if:
 - [x] It runs into the border; or
-- [ ] It runs into itself; or
+- [x] It runs into itself; or
 - [x] The user attempts to reverse the snake's direction.
 
 The user wins if:

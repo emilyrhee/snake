@@ -35,18 +35,53 @@ typedef struct {
     int Y;
 } TrophyData;
 
+int randomRange(int lowerBound, int upperBound){
+    srand(time(NULL));
+    return (rand() % (upperBound - lowerBound + 1) + lowerBound);
+}
 
 //initializes snake (Mitch)
 void initSnake(SnakeData* snake, int size, int speed){
+    
     snake -> size = size; 
     snake -> isAlive = true;
     snake -> speed = speed;
-    for(int i = 0; i < size; i++){
-        snake -> x[i] = COLS / 2 - i;
-        snake -> y[i] = LINES / 2;
-        move(LINES / 2, COLS / 2 - i);
-        addstr("#");
+    snake -> direction = randomRange(0, 3);
+    switch (snake->direction) {
+        case UP: 
+            for(int i = 0; i < size; i++){
+                snake -> x[i] = COLS / 2;
+                snake -> y[i] = LINES / 2 + i;
+                move(LINES / 2 +i , COLS / 2 );
+                addstr("#");
+            }  
+            break;
+        case DOWN:
+            for(int i = 0; i < size; i++){
+                snake -> x[i] = COLS / 2;
+                snake -> y[i] = LINES / 2 - i;
+                move(LINES / 2 - i, COLS / 2);
+                addstr("#");
+            }
+            break;
+        case LEFT:
+            for(int i = 0; i < size; i++){
+                snake -> x[i] = COLS / 2 + i;
+                snake -> y[i] = LINES / 2;
+                move(LINES / 2, COLS / 2 + i);
+                addstr("#");
+            }
+            break;
+        case RIGHT:
+            for(int i = 0; i < size; i++){
+                snake -> x[i] = COLS / 2 - i;
+                snake -> y[i] = LINES / 2;
+                move(LINES / 2, COLS / 2 - i);
+                addstr("#");
+            }
+            break;
     }
+
 }
 
 // boilerplate for curses (Emily)
@@ -115,8 +150,18 @@ void handleInput(SnakeData* snake) {
 }
 
 // Checks if snake's coordinates are equal to trophy's (Emily)
-bool isColliding(SnakeData* snake, TrophyData* trophy) {
+bool isCollidingTrophy(SnakeData* snake, TrophyData* trophy) {
     return (snake->x[0] == trophy->X && snake->y[0] == trophy->Y);
+}
+
+//Checks if snake collides with self (mitch)
+void isCollidingSnake(SnakeData* snake){
+    bool collides = FALSE;
+    for(int i = 1; i < snake->size; i++ ){
+        if (snake->x[0] == snake->x[i] && snake->y[0] == snake->y[i]) {
+            snake->isAlive = FALSE;
+        }
+    }
 }
 
 //moves snake (Mitch)
@@ -162,6 +207,7 @@ void snakeMovement(SnakeData* snake){
     }
     snake->x[0] = nextX;
     snake->y[0] = nextY;
+
     // Redraw snake from head to end of tail (Emily)
     for (int i = 0; i < snake->size; i++) {
         move(snake->y[i], snake->x[i]);
@@ -171,12 +217,6 @@ void snakeMovement(SnakeData* snake){
     //delete body at (LastY, LastX)
     move(lastY, lastX);
     addstr(" ");
-}
-
-// sets a random initial direction (Emily)
-void initDirection(SnakeData* snake) {
-    srand(time(NULL));
-    snake->direction = rand() % 4;
 }
 
 // Check if snake's head collides w/border (Emily)
@@ -189,12 +229,10 @@ bool isSnakeOutOfBounds(SnakeData* snake) {
     );
 }
 
-int randomRange(int lowerBound, int upperBound){
-    return (rand() % (upperBound - lowerBound + 1) + lowerBound);
-}
+
 
 //Create random trophy (Mitch)
-void spawnTrophy(TrophyData* trophy){
+void spawnTrophy(TrophyData* trophy, SnakeData* snake){
     //delete  previous trophy
     move(trophy->Y, trophy->X);
     addstr(" ");
@@ -214,6 +252,12 @@ void spawnTrophy(TrophyData* trophy){
     trophy -> Y = ranY;
 
     //create trophy
+    for(int i = 0; i < snake->size; i++){
+        if (snake->x[i] == ranX && snake->y[i] == ranY){
+            spawnTrophy(trophy, snake);
+            return;
+        }
+    }
     move(ranY, ranX);
     printw("%d",ranTrophy);
 }
@@ -246,20 +290,26 @@ int main() {
     int size = 5;
     int speed = 200000;
     
-    initDirection(&snake);
+    //initDirection(&snake);
     initCurses();
     drawBorders();
-    startScreen();
+    //startScreen();
     drawBorders();
     initSnake(&snake, size, speed);
-
+    
     //initalize trophy outside bounds
     trophy.X = -1;
     trophy.Y = -1;
-    spawnTrophy(&trophy);
+    spawnTrophy(&trophy, &snake);
 
     while(snake.isAlive){
+        int speed = 0;
         handleInput(&snake);
+        if(snake.direction == UP || snake.direction == DOWN){
+            speed = snake.speed*.66;
+        }else{
+            speed = snake.speed;
+        }
         snakeMovement(&snake);
         
         usleep(snake.speed);
@@ -268,13 +318,15 @@ int main() {
             snake.isAlive = false;
         }
 
-        if (isColliding(&snake, &trophy)) {
+        if (isCollidingTrophy(&snake, &trophy)) {
             trophy.isAlive = false;
+            snake.speed *= .9;
             growSnake(&snake, &trophy);
         }
+        isCollidingSnake(&snake);
 
         if (trophyClock > trophy.time*1000000 || !trophy.isAlive){
-            spawnTrophy(&trophy);
+            spawnTrophy(&trophy, &snake);
             trophyClock = 0;
         }
         trophyClock += snake.speed;
